@@ -5,7 +5,7 @@ from rest_framework.serializers import Serializer
 from .serializers import CategorySerializer, ProductSerializer, SliderSerializer, FavouriteSerializer
 from .models import Favourite, Slider, Category, Product
 from rest_framework.response import Response
-from .permissions import IsAdminOrReadOnly, IsUserOrNotAllowed
+from .permissions import IsAdminOrReadOnly, IsAuthenticatedOrReadOnly
 from rest_framework import status
 
 class CategoryView(ListCreateAPIView):
@@ -47,7 +47,7 @@ class SliderView(ListCreateAPIView):
 class FavouriteViews(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.DestroyModelMixin, GenericViewSet):
     queryset = Favourite.objects.all()
     serializer_class = FavouriteSerializer
-    permission_classes = [IsUserOrNotAllowed]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

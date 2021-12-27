@@ -11,6 +11,6 @@ urlpatterns = [
     path('categories/', CategoryView.as_view()),
     path('categories/<int:id>/', CategoryWithDescriptionView.as_view()),
     path('categories/<int:id>/<str:category>/', ProductView.as_view()),
-    path('', include(router.urls)),
     path('sliders/', SliderView.as_view()),
+    path('', include(router.urls)),
 ]
