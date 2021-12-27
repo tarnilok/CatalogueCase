@@ -19,10 +19,7 @@ class SliderSerializer(serializers.ModelSerializer):
         fields = ['productId', 'image']
         
     def create(self, validated_data):
-        # print('vvvvvvvvvvvv:', validated_data)
-        # if (validated_data['image']):
         image_data = validated_data.pop('image')
-        # if (image_data):
         data = Product.objects.get(id=validated_data['productId'].id)
         data.product_image = image_data
         data.save()
@@ -36,13 +33,9 @@ class FavouriteSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
     def create(self, validated_data):
-        print('vvvvvvvvvvvv:', validated_data['productId'].id)
         data = Product.objects.get(id=validated_data['productId'].id)
         data.isFavorite = True
         data.save()
         favourite = Favourite.objects.create(**validated_data)
         favourite.save()
         return favourite
-    
-    # def get(self, obj):
-    #     return Favourite.objects.filter(productId_isFavorite=True)

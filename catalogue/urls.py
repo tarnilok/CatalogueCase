@@ -5,6 +5,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register('products', OnlyProductsView)
+router.register('favourites', FavouriteViews)
 
 urlpatterns = [
     path('categories/', CategoryView.as_view()),
@@ -12,5 +13,4 @@ urlpatterns = [
     path('categories/<int:id>/<str:category>/', ProductView.as_view()),
     path('', include(router.urls)),
     path('sliders/', SliderView.as_view()),
-    path('favourites/', FavouriteViews.as_view()),
 ]
