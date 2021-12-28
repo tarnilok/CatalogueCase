@@ -1,4 +1,4 @@
-from rest_framework import fields, serializers
+from rest_framework import serializers
 from .models import Category, Product, Slider, Favourite
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -6,12 +6,23 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id', 'name', 'description']
         
-class ProductSerializer(serializers.ModelSerializer):
-    # category = serializers.StringRelatedField()
+class ProductSerializerWithoutFavourite(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
         
+class ProductSerializer(serializers.ModelSerializer):
+    favourites = serializers.BooleanField(default=False)
+    class Meta:
+        model = Product
+        fields = ['category', 'name', 'product_image', 'description', 'price', 'favourites']
+        
+class ProductWithIsFavouriteSerializer(serializers.ModelSerializer):
+    favourites = serializers.BooleanField(default=False)
+    class Meta:
+        model = Product
+        fields = ['category', 'name', 'product_image', 'description', 'price', 'favourites']
+
 class SliderSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(max_length=None, allow_empty_file=True, use_url=True)
     class Meta:
@@ -33,9 +44,10 @@ class FavouriteSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
     def create(self, validated_data):
-        data = Product.objects.get(id=validated_data['productId'].id)
-        data.isFavorite = True
-        data.save()
-        favourite = Favourite.objects.create(**validated_data)
-        favourite.save()
-        return favourite
+        favourites = Favourite.objects.all()
+        for fav in favourites:
+            if fav.productId.id == validated_data['productId'].id and fav.user.id == validated_data['user'].id:
+                raise serializers.ValidationError({"detail": "same field exists"})
+        new_fav = Favourite.objects.create(**validated_data)
+        new_fav.save()
+        return new_fav

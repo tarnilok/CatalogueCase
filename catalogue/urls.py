@@ -1,16 +1,16 @@
 from django.db import router
 from django.urls import path, include
-from .views import ProductView, SliderView, CategoryView, CategoryWithDescriptionView, OnlyProductsView, FavouriteViews
+from .views import ProductView, SliderView, CategoryView, OnlyProductsView, FavouriteViews, ProductWithIsFavouriteView
 from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register('products', OnlyProductsView)
-router.register('favourites', FavouriteViews)
+router.register('favorite', FavouriteViews)
+router.register('categories', CategoryView)
 
 urlpatterns = [
-    path('categories/', CategoryView.as_view()),
-    path('categories/<int:id>/', CategoryWithDescriptionView.as_view()),
-    path('categories/<int:id>/<str:category>/', ProductView.as_view()),
+    path('categories/<int:id>/products/', ProductView.as_view()),
+    path('products/<int:id>/', ProductWithIsFavouriteView.as_view()),
     path('sliders/', SliderView.as_view()),
     path('', include(router.urls)),
 ]

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -18,7 +19,10 @@ class Product(models.Model):
     product_image = models.ImageField(upload_to='productphotos/')
     description = models.TextField()
     price = models.IntegerField()
-    isFavorite = models.BooleanField(default=False)
+    
+    @property
+    def favourites(self):
+        return Favourite.objects.filter(productId = self.id)
     
     def __str__(self):
         return self.name
@@ -44,7 +48,8 @@ class Slider(models.Model):
         ordering = ['id']
         
 class Favourite(models.Model):
-    productId = models.ForeignKey(Product, on_delete=models.CASCADE, unique=True)
+    productId = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.productId.name
