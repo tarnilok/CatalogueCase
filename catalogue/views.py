@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
-from .serializers import CategorySerializer, ProductSerializer, SliderSerializer, FavouriteSerializer, ProductWithIsFavouriteSerializer, ProductSerializerWithoutFavourite
+from .serializers import CategorySerializer, ProductSerializer, SliderSerializer, FavouriteSerializer, ProductSerializerWithoutFavourite
 from .models import Favourite, Slider, Category, Product
 from rest_framework.response import Response
 from .permissions import IsAdminOrReadOnly, IsAuthenticatedOrReadOnly
@@ -28,11 +28,11 @@ class OnlyProductsView(mixins.ListModelMixin, mixins.CreateModelMixin, GenericVi
     
 class ProductWithIsFavouriteView(RetrieveAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductWithIsFavouriteSerializer
+    serializer_class = ProductSerializer
     
     def get(self, request, *args, **kwargs):
         product = Product.objects.filter(id = kwargs['id'])
-        serializer = ProductWithIsFavouriteSerializer(product, many=True)
+        serializer = ProductSerializer(product, many=True)
         return Response(serializer.data)
 class SliderView(ListCreateAPIView):
     queryset = Slider.objects.all()

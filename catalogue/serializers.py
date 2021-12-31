@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.fields import NullBooleanField
 from .models import Category, Product, Slider, Favourite
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -12,32 +13,27 @@ class ProductSerializerWithoutFavourite(serializers.ModelSerializer):
         fields = '__all__'
         
 class ProductSerializer(serializers.ModelSerializer):
-    favourites = serializers.BooleanField(default=False)
+    isFavorite = serializers.BooleanField(default=False)
     class Meta:
         model = Product
-        fields = ['category', 'name', 'product_image', 'description', 'price', 'favourites']
-        
-class ProductWithIsFavouriteSerializer(serializers.ModelSerializer):
-    favourites = serializers.BooleanField(default=False)
-    class Meta:
-        model = Product
-        fields = ['category', 'name', 'product_image', 'description', 'price', 'favourites']
-
+        fields = ['id', 'category', 'name', 'product_image', 'description', 'price', 'isFavorite']
+            
 class SliderSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(max_length=None, allow_empty_file=True, use_url=True)
+    image = serializers.ImageField(required=False)
     class Meta:
         model = Slider
         fields = ['productId', 'image']
         
     def create(self, validated_data):
-        image_data = validated_data.pop('image')
-        data = Product.objects.get(id=validated_data['productId'].id)
-        data.product_image = image_data
-        data.save()
+        if 'image' in validated_data:
+            image_data = validated_data.pop('image')
+            data = Product.objects.get(id=validated_data['productId'].id)
+            data.product_image = image_data
+            data.save()
         slider = Slider.objects.create(**validated_data)
         slider.save()
         return slider
-    
+              
 class FavouriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favourite

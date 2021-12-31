@@ -21,7 +21,7 @@ class Product(models.Model):
     price = models.IntegerField()
     
     @property
-    def favourites(self):
+    def isFavorite(self):
         return Favourite.objects.filter(productId = self.id)
     
     def __str__(self):
