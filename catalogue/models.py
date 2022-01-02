@@ -20,13 +20,8 @@ class Product(models.Model):
     description = models.TextField()
     price = models.IntegerField()
     
-    @property
-    def isFavorite(self):
-        return Favourite.objects.filter(productId = self.id)
-    
     def __str__(self):
-        return self.name
-    
+        return self.name    
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Products'

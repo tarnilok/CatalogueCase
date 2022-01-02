@@ -18,7 +18,7 @@ class ProductView(RetrieveAPIView):
     
     def get(self, request, format=None, **kwargs):
         categoryName = Product.objects.filter(category=kwargs['id'])
-        serializer = ProductSerializer(categoryName, many=True)
+        serializer = ProductSerializer(categoryName, context={'request': request}, many=True)
         return Response(serializer.data)
     
 class OnlyProductsView(mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
@@ -32,7 +32,7 @@ class ProductWithIsFavouriteView(RetrieveAPIView):
     
     def get(self, request, *args, **kwargs):
         product = Product.objects.filter(id = kwargs['id'])
-        serializer = ProductSerializer(product, many=True)
+        serializer = ProductSerializer(product, context={'request': request}, many=True)
         return Response(serializer.data)
 class SliderView(ListCreateAPIView):
     queryset = Slider.objects.all()
