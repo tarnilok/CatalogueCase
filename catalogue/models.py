@@ -28,7 +28,7 @@ class Product(models.Model):
         ordering = ['name']
         
 class Slider(models.Model):
-    productId = models.ForeignKey(Product, on_delete=models.CASCADE, unique=True)
+    productId = models.OneToOneField(Product, on_delete=models.CASCADE, unique=True)
     
     @property
     def image(self):
