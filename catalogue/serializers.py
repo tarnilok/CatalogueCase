@@ -26,6 +26,9 @@ class ProductSerializer(serializers.ModelSerializer):
             if fav.user.id == self.context.get('request').user.id and fav.productId.id == obj.id :
                 self.isFavorite = True
                 return self.isFavorite
+            elif self.context.get('request').user.id == None :
+                self.isFavorite = None
+                return self.isFavorite  
             else :
                 self.isFavorite = False
         return self.isFavorite
